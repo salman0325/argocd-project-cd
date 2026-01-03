@@ -18,7 +18,8 @@ spec:
     spec:
       containers:
         - name: backend
-          image: adijaiswal/backend:694535bf15cb7328bd153687abca4167a3fd083a
+          image: salmandevops290/argocd-k8s-backend:a90020fbebac501e14d982708f288af051d4063f
+
           ports:
             - containerPort: 5000
           env:
