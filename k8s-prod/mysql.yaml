@@ -54,7 +54,7 @@ metadata:
   labels:
     app: mysql
 spec:
-  clusterIP: None
+  clusterIP: None  # Headless for StatefulSet
   selector:
     app: mysql
   ports:
@@ -106,10 +106,11 @@ spec:
           configMap:
             name: mysql-initdb-config
   volumeClaimTemplates:
-  - metadata:
-      name: mysql-persistent-storage
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      
-
+    - metadata:
+        name: mysql-persistent-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: standard   # Minikube default SC
