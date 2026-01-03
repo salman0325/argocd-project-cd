@@ -1,40 +1,35 @@
 ---
+# Secret for MySQL root password
 apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-secret
   namespace: prod
-  labels:
-    app: mysql
 type: Opaque
 stringData:
   MYSQL_ROOT_PASSWORD: Aditya
 
 ---
+# ConfigMap for database name
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-config
   namespace: prod
-  labels:
-    app: mysql
 data:
   MYSQL_DATABASE: crud_app
 
 ---
+# ConfigMap for init SQL scripts
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-initdb-config
   namespace: prod
-  labels:
-    app: mysql
 data:
   init.sql: |
     CREATE DATABASE IF NOT EXISTS crud_app;
-
     USE crud_app;
-
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
@@ -46,13 +41,12 @@ data:
     );
 
 ---
+# Service for MySQL
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql
   namespace: prod
-  labels:
-    app: mysql
 spec:
   clusterIP: None  # Headless for StatefulSet
   selector:
@@ -62,13 +56,32 @@ spec:
       targetPort: 3306
 
 ---
+# PersistentVolume (Optional for local dev)
+# Minikube automatically provisions default storage, so PV is optional
+# But if you want explicit PV:
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+  namespace: prod
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  hostPath: 
+    path: /mnt/data/mysql   # Local folder in minikube node
+    type: DirectoryOrCreate
+
+---
+# StatefulSet for MySQL
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql
   namespace: prod
-  labels:
-    app: mysql
 spec:
   serviceName: mysql
   replicas: 1
@@ -112,5 +125,5 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 5Gi
+            storage: 1Gi
         storageClassName: standard   # Minikube default SC
