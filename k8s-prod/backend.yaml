@@ -19,7 +19,6 @@ spec:
       containers:
         - name: backend
           image: salmandevops290/argocd-k8s-backend:a90020fbebac501e14d982708f288af051d4063f
-
           ports:
             - containerPort: 5000
           env:
