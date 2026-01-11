@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: salmandevops290/argocd-k8s-frontend:f08c76d16c4dbc607e26fe210dd87c9c919f443e
+          image: salmandevops290/argocd-k8s-frontend:c99ab617618a33967b965d513828285252ec6d63
           ports:
             - containerPort: 80
 ---
